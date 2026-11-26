@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asistente de IA — TecnoSoft Punto de Venta</title>
+<meta name="description" content="El Asistente de IA del Punto de Venta responde sobre tus ventas, tu stock, tus precios y tus clientes, y hace altas con tu confirmación. Desde Claude, en la computadora o en el celular, o desde el Punto de Venta.">
+<meta property="og:title" content="Asistente de IA del Punto de Venta">
+<meta property="og:description" content="Preguntale a tu negocio: ventas, stock, precios y clientes en tus palabras, con los mismos números que tus pantallas.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tecnosoft-pdv.github.io/asistente-de-ia.html">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%231d63ed'/><path d='M9 10h14M16 10v13' stroke='%23ffffff' stroke-width='3.4' stroke-linecap='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#ffffff; --bg-2:#f5f7fa; --bg-3:#e6eaf0;
+  --text:#0f1218; --muted:#525a66; --dim:#6b7280;
+  --line:rgba(15,18,24,.09); --line-2:rgba(15,18,24,.18);
+  --accent:#1d63ed; --accent-ink:#ffffff;
+  --radius:22px;
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.035em;line-height:1.05}
+h2{font-size:clamp(2.1rem,5vw,3.6rem)}
+h3{font-size:1.2rem;letter-spacing:-.02em;line-height:1.25}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:600px}
+.head{margin-bottom:56px}
+.head .eyebrow{display:block;margin-bottom:16px}
+.head .lead{margin-top:18px}
+section{padding:112px 0}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:99px;font-weight:600;font-size:1rem;text-decoration:none;border:1px solid transparent;transition:transform .2s,background .2s,box-shadow .2s,border-color .2s}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 0 rgba(29,99,237,0)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 44px -8px rgba(29,99,237,.55)}
+.btn.ghost{border-color:var(--line-2);color:var(--text)}
+.btn.ghost:hover{background:rgba(15,18,24,.05)}
+.btn:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Navegación */
+.nav{position:fixed;top:16px;left:0;right:0;z-index:20;padding:0 16px}
+.nav-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 8px 8px 20px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.78);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.02em;text-decoration:none;white-space:nowrap}
+.logo svg{width:24px;height:24px;flex:none}
+.logo span{color:var(--dim);font-weight:400}
+.links{display:flex;gap:20px;white-space:nowrap}
+.links a{color:var(--muted);text-decoration:none;font-size:.95rem;transition:color .2s}
+.links a:hover{color:var(--text)}
+.nav .btn{padding:9px 18px;font-size:.92rem;white-space:nowrap;flex:none}
+@media(max-width:1020px){.links{display:none}}
+@media(max-width:440px){.logo span{display:none}}
+@media(max-width:380px){.nav .btn{padding:8px 13px;font-size:.84rem}}
+
+/* Portada */
+.hero{position:relative;padding:176px 0 0;text-align:center;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000 10%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 20%,#000 10%,transparent 75%);opacity:.55;pointer-events:none}
+.hero::after{content:"";position:absolute;left:50%;top:44%;width:900px;height:520px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(29,99,237,.16),transparent);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:6px 16px;border:1px solid var(--line-2);border-radius:99px;font-size:.88rem;color:var(--muted);background:#fff;margin-bottom:28px}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+h1{font-size:clamp(2.9rem,8.4vw,6.2rem);letter-spacing:-.05em;line-height:.98}
+h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{margin:28px auto 36px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+/* Ventana del Punto de Venta */
+.app{position:relative;margin:72px auto -2px;max-width:980px;text-align:left;border:1px solid var(--line-2);border-bottom:0;border-radius:18px 18px 0 0;background:var(--bg-2);overflow:hidden;box-shadow:0 -30px 120px -40px rgba(29,99,237,.35)}
+.app-bar{display:flex;align-items:center;gap:7px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.app-bar b{width:11px;height:11px;border-radius:50%;background:var(--bg-3);border:1px solid var(--line-2)}
+.app-bar span{margin-left:10px;font-family:var(--mono);font-size:.75rem;color:var(--dim)}
+.app-body{display:grid;grid-template-columns:170px 1fr 290px}
+.app-side{padding:16px 12px;border-right:1px solid var(--line);font-size:.86rem;color:var(--muted)}
+.app-side div{padding:7px 12px;border-radius:9px}
+.app-side .on{background:rgba(29,99,237,.12);color:var(--accent)}
+.app-body>.chat{border:0;border-radius:0}
+.app-prop{padding:18px 20px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.app-prop small{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+@media(max-width:860px){.app-body{grid-template-columns:1fr}.app-side{display:none}.app-prop{border-left:0;border-top:1px solid var(--line)}}
+
+/* Chat */
+.chat{display:flex;flex-direction:column;min-width:0;background:#fff;border:1px solid var(--line-2);border-radius:20px;overflow:hidden;text-align:left;box-shadow:0 24px 70px -40px rgba(15,18,24,.35)}
+.chat-top{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:#fff}
+.chat-top b{display:block;font-size:.95rem;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.chat-top small{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--dim);line-height:1.3}
+.chat-top small img{width:14px;height:14px}
+.chat-top small i{width:7px;height:7px;border-radius:50%;background:#22a861}
+.chat-body{flex:1;display:flex;flex-direction:column;gap:12px;padding:18px 16px;background:var(--bg-2)}
+.chat-in{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
+.chat-in span{flex:1;min-width:0;padding:9px 16px;border:1px solid var(--line-2);border-radius:99px;font-size:.86rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-in i{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:var(--accent)}
+.chat-in svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.av{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent)}
+.av svg{width:16px;height:16px;fill:#fff}
+.av.claude{background:#fff;border:1px solid var(--line-2)}
+.av img{width:18px;height:18px}
+.msg{display:flex;align-items:flex-end;gap:8px}
+.msg.yo{justify-content:flex-end}
+.msg.yo p{max-width:82%;padding:10px 14px;border-radius:18px 18px 4px 18px;background:var(--accent);color:#fff;font-size:.9rem;line-height:1.45}
+.msg.ia>div{min-width:0;max-width:86%;padding:10px 14px;border-radius:18px 18px 18px 4px;background:#fff;border:1px solid var(--line);font-size:.9rem;line-height:1.5;color:var(--text)}
+.msg.ia>div>*+*{margin-top:8px}
+.msg.ia.ancho>div{flex:1}
+.doing{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+.doing i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.mini{width:100%;border-collapse:collapse;font-size:.84rem}
+.mini th{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);font-weight:400;text-align:left;padding:4px 0;border-bottom:1px solid var(--line)}
+.mini td{padding:6px 0;border-bottom:1px solid var(--line)}
+.mini tr:last-child td{border-bottom:0}
+.mini td+td,.mini th+th{text-align:right;font-family:var(--mono);white-space:nowrap;padding-left:12px}
+
+/* Tarjeta de confirmación */
+.conf{border:1px solid var(--line-2);border-radius:16px;background:#fff;padding:16px;box-shadow:0 10px 30px -18px rgba(15,18,24,.35)}
+.conf h3{font-size:1.02rem}
+.conf p{color:var(--muted);font-size:.86rem;margin-top:4px}
+.conf .mini{margin:10px 0 12px}
+.chat-body>.conf{margin-left:38px}
+.codes{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.codes span{font-family:var(--mono);font-size:.72rem;padding:3px 8px;border:1px solid var(--line);border-radius:8px;color:var(--muted);background:var(--bg-2)}
+.acts{display:flex;gap:8px}
+.acts span{flex:1;padding:10px;border-radius:12px;text-align:center;font-size:.9rem;font-weight:600;border:1px solid var(--line-2)}
+.acts .si{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nota{font-size:.8rem;color:var(--dim)}
+
+/* Logos de Claude y ChatGPT */
+.marcas{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:24px}
+.marcas small{font-size:.86rem;color:var(--dim);margin-right:4px}
+.marcas span{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line-2);border-radius:99px;background:#fff;font-size:.9rem;font-weight:500;color:var(--text)}
+.marcas img{width:20px;height:20px;object-fit:contain}
+
+/* Dos columnas con ilustración */
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.dos .lead{margin-top:20px}
+@media(max-width:900px){.dos{grid-template-columns:minmax(0,1fr);gap:40px}.dos .chat,.dos .tel{order:2}}
+@media(max-width:620px){.chat-body>.conf{margin-left:0}}
+@media(max-width:400px){.mini{font-size:.76rem}.mini td+td,.mini th+th{padding-left:8px}.msg.ia>div,.msg.yo p{max-width:92%}}
+
+.lst{display:grid;gap:10px;margin:22px 0 0;padding:0;list-style:none;color:var(--muted);font-size:.97rem}
+.lst li{display:flex;gap:10px;align-items:baseline}
+.lst li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--accent);transform:translateY(-2px)}
+
+/* Celular */
+.tel{display:flex;justify-content:center}
+.phone{width:min(100%,350px);padding:12px;border:1px solid var(--line-2);border-radius:46px;background:var(--bg-2);box-shadow:0 30px 90px -40px rgba(29,99,237,.45)}
+.screen{border:1px solid var(--line);border-radius:36px;background:#fff;overflow:hidden}
+.screen-top{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 6px;font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+.screen-top b{width:84px;height:22px;border-radius:99px;background:var(--text)}
+.screen .chat{border:0;border-radius:0;box-shadow:none}
+
+/* Grilla de ejemplos */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.tile{position:relative;grid-column:span 2;padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--bg-2),var(--bg));overflow:hidden;transition:border-color .25s,transform .25s;display:flex;flex-direction:column}
+.tile:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.tile.w3{grid-column:span 3}
+.tile.w6{grid-column:span 6}
+.tile p{color:var(--muted);font-size:.97rem;margin-top:8px}
+.tile .lst{margin-top:16px}
+.ico{display:grid;place-items:center;width:48px;height:48px;margin-bottom:20px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 6px 20px rgba(15,18,24,.07)}
+.ico svg{width:26px;height:26px;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dice{display:flex;justify-content:flex-end;margin-top:auto;padding-top:22px}
+.dice span{max-width:92%;padding:11px 15px;border-radius:18px 18px 4px 18px;background:var(--accent);color:#fff;font-size:.92rem;line-height:1.45}
+.combina{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px}
+.combina p{max-width:560px}
+.cadena{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:.86rem;color:var(--muted)}
+.cadena span{padding:7px 14px;border:1px solid var(--line-2);border-radius:99px;background:#fff}
+.cadena .on{border-color:var(--accent);color:var(--accent)}
+@media(max-width:900px){.tile,.tile.w3{grid-column:span 3}.tile.w6{grid-column:span 6}}
+@media(max-width:620px){.bento{grid-template-columns:1fr}.tile,.tile.w3,.tile.w6{grid-column:auto}}
+
+/* Tus datos */
+.datos{background:var(--bg-2);border-block:1px solid var(--line)}
+.datos .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
+.datos .lead{margin-top:20px}
+.fact{padding:22px 0;border-top:1px solid var(--line)}
+.fact:last-child{border-bottom:1px solid var(--line)}
+.fact p{color:var(--muted);font-size:.97rem;margin-top:4px}
+@media(max-width:860px){.datos .wrap{grid-template-columns:1fr;gap:40px}}
+
+/* Pasos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{padding:28px;border:1px solid var(--line);border-radius:var(--radius)}
+.step b{display:block;font-family:var(--mono);font-weight:400;font-size:.85rem;color:var(--accent);margin-bottom:44px}
+.step p{color:var(--muted);margin-top:8px;font-size:.97rem}
+.step .marcas{margin-top:18px}
+@media(max-width:760px){.steps{grid-template-columns:1fr}.step b{margin-bottom:20px}}
+.dos-pasos{grid-template-columns:repeat(2,1fr)}
+@media(max-width:760px){.dos-pasos{grid-template-columns:1fr}}
+
+/* Preguntas */
+.faq{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px}
+details{border-top:1px solid var(--line);padding:22px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;font-weight:500;font-size:1.08rem}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.4rem;line-height:1;color:var(--dim);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg);color:var(--accent)}
+details p{color:var(--muted);margin-top:12px;max-width:600px}
+details a{color:var(--accent)}
+@media(max-width:860px){.faq{grid-template-columns:1fr;gap:32px}}
+
+/* Llamado final */
+.final{padding:0 0 112px}
+.final-box{position:relative;overflow:hidden;padding:88px 32px;border-radius:32px;background:var(--accent);color:var(--accent-ink);text-align:center}
+.final-box h2{font-size:clamp(2.3rem,6vw,4.4rem);letter-spacing:-.045em}
+.final-box p{margin:18px auto 32px;font-size:1.15rem;max-width:520px;opacity:.78}
+.final-box .btn{background:#fff;color:var(--accent)}
+.final-box .btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px -10px rgba(0,0,0,.35)}
+
+footer{padding:32px 0;border-top:1px solid var(--line);color:var(--dim);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer a{color:var(--muted);text-underline-offset:3px}
+
+/* Aparición al desplazar: solo si hay JavaScript */
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv{opacity:1;transform:none;transition:none}
+  .tile,.btn{transition:none}
+}
+@media(max-width:620px){section{padding:80px 0}.hero{padding-top:136px}.final{padding-bottom:80px}.final-box{padding:64px 24px}.chat-body{padding:14px 12px}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<!-- Íconos reutilizables: el del Asistente de IA y el de enviar -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="chispa" viewBox="0 0 24 24"><path d="M12 2.5l2.1 6.4 6.4 2.1-6.4 2.1L12 19.5l-2.1-6.4L3.5 11l6.4-2.1z"/><path d="M19 15.5l.8 2.2 2.2.8-2.2.8L19 21.5l-.8-2.2-2.2-.8 2.2-.8z"/></symbol>
+  <symbol id="enviar" viewBox="0 0 24 24"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1d63ed"/><path d="M9 10h14M16 10v13" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      TecnoSoft <span>Punto de Venta</span>
+    </a>
+    <nav class="links" aria-label="Asistente de IA">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#claude">En Claude</a>
+      <a href="#punto-de-venta">En el Punto de Venta</a>
+      <a href="#datos">Tus datos</a>
+      <a href="#faq">Preguntas</a>
+    </nav>
+    <a class="btn primary" href="index.html#contacto">Pedí una demo</a>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="hero">
+  <div class="wrap">
+    <div class="pill"><i></i> Nuevo · Próximamente</div>
+    <h1>Preguntale<br><em>a tu negocio.</em></h1>
+    <p class="lead">El Asistente de IA responde sobre tus ventas, tu stock, tus precios y tus clientes, en tus palabras. Y hace altas, siempre con tu confirmación. Desde Claude, en la computadora o en el celular, o desde el Punto de Venta.</p>
+    <div class="cta">
+      <a class="btn primary" href="index.html#contacto">Consultá por el asistente →</a>
+      <a class="btn ghost" href="#como-funciona">Ver cómo funciona</a>
+    </div>
+
+    <!-- Ilustración hecha en HTML, con datos de ejemplo. -->
+    <div class="app" aria-hidden="true">
+      <div class="app-bar"><b></b><b></b><b></b><span>Punto de Venta</span></div>
+      <div class="app-body">
+        <div class="app-side">
+          <div>Ventas</div><div>Caja</div><div>Stock</div><div>Clientes</div><div>Análisis</div><div class="on">Asistente de IA</div>
+        </div>
+        <div class="chat">
+          <div class="chat-top">
+            <span class="av"><svg><use href="#chispa"/></svg></span>
+            <div><b>Asistente de IA</b><small>con <img src="iconos/claude.png" alt=""> Claude · Mi comercio</small></div>
+          </div>
+          <div class="chat-body">
+            <div class="msg yo"><p>¿Qué sucursal vendió más hoy?</p></div>
+            <div class="msg ia ancho"><span class="av"><svg><use href="#chispa"/></svg></span><div>
+              <span class="doing"><i></i> Consultando las ventas de hoy…</span>
+              <table class="mini">
+                <tr><th>Sucursal</th><th>Hoy</th></tr>
+                <tr><td>Centro</td><td>$&nbsp;612.400</td></tr>
+                <tr><td>Norte</td><td>$&nbsp;418.900</td></tr>
+                <tr><td>Shopping</td><td>$&nbsp;223.000</td></tr>
+              </table>
+              <p>El Centro, con el 49% de lo vendido hoy.</p>
+            </div></div>
+            <div class="msg yo"><p>¿Y quién es el mejor vendedor del mes?</p></div>
+            <div class="msg ia"><span class="av"><svg><use href="#chispa"/></svg></span><div><p>Laura: $&nbsp;4.210.000, el 41% del mes. Le siguen Martín ($&nbsp;3.180.000) y Sofía ($&nbsp;2.940.000).</p></div></div>
+            <div class="msg yo"><p>Creá la remera R100 en talles S a XL, negra y blanca, a $&nbsp;15.000</p></div>
+            <div class="msg ia"><span class="av"><svg><use href="#chispa"/></svg></span><div><p>Te preparé el alta. Revisala y confirmala acá al lado.</p></div></div>
+          </div>
+          <div class="chat-in"><span>Preguntale a tu negocio…</span><i><svg><use href="#enviar"/></svg></i></div>
+        </div>
+        <div class="app-prop">
+          <small>Alta preparada</small>
+          <div class="conf">
+            <h3>Remera R100</h3>
+            <p>8 variantes · Lista General $&nbsp;15.000</p>
+            <div class="codes"><span>R100NEGS</span><span>R100NEGM</span><span>R100NEGL</span><span>R100NEGXL</span><span>R100BLAS</span><span>+3</span></div>
+            <div class="acts"><span class="si">Confirmar</span><span>Cancelar</span></div>
+          </div>
+          <p class="nota">Nada se graba hasta que confirmás.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="como-funciona" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2>Preguntás. Consulta.<br>Te responde.</h2>
+    </div>
+    <div class="steps">
+      <div class="step rv"><b>01</b><h3>Preguntás</h3><p>Como le preguntarías a tu encargado: "¿Cuánto vendimos hoy?"</p></div>
+      <div class="step rv"><b>02</b><h3>Consulta el Punto de Venta</h3><p>Usa las mismas consultas que tus pantallas, con tus permisos. La IA nunca entra a tu base de datos.</p></div>
+      <div class="step rv"><b>03</b><h3>Te responde</h3><p>"Hoy se vendieron $&nbsp;1.254.300 en 37 comprobantes." Los mismos números que ves en tus grillas.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="claude" style="padding-top:0">
+  <div class="wrap dos">
+    <div class="tel rv" aria-hidden="true">
+      <div class="phone">
+        <div class="screen">
+          <div class="screen-top"><span>20:14</span><b></b><span>5G</span></div>
+          <div class="chat">
+            <div class="chat-top">
+              <span class="av claude"><img src="iconos/claude.png" alt=""></span>
+              <div><b>Claude</b><small><i></i> Conectado al Punto de Venta</small></div>
+            </div>
+            <div class="chat-body">
+              <div class="msg yo"><p>¿Qué producto se vendió más este mes?</p></div>
+              <div class="msg ia ancho"><span class="av claude"><img src="iconos/claude.png" alt=""></span><div>
+                <p>La Remera R100 negra: 86 unidades, por $&nbsp;1.290.000.</p>
+                <table class="mini">
+                  <tr><th>Producto</th><th>Unidades</th></tr>
+                  <tr><td>Remera R100 negra</td><td>86</td></tr>
+                  <tr><td>Jean J20 azul</td><td>41</td></tr>
+                  <tr><td>Buzo B07 gris</td><td>33</td></tr>
+                </table>
+              </div></div>
+              <div class="msg yo"><p>¿Qué se vende mucho y tiene poco stock?</p></div>
+              <div class="msg ia ancho"><span class="av claude"><img src="iconos/claude.png" alt=""></span><div>
+                <table class="mini">
+                  <tr><th>Producto</th><th>Quedan</th></tr>
+                  <tr><td>R100 negra M</td><td>2</td></tr>
+                  <tr><td>Jean J20 azul 38</td><td>1</td></tr>
+                  <tr><td>Buzo B07 gris L</td><td>3</td></tr>
+                </table>
+              </div></div>
+            </div>
+            <div class="chat-in"><span>Escribile a Claude…</span><i><svg><use href="#enviar"/></svg></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rv">
+      <span class="eyebrow">En Claude, en la computadora o en el celular</span>
+      <h2 style="margin-top:16px">Tu negocio, también desde tu casa.</h2>
+      <p class="lead">Conectás tu cuenta de Claude con el Punto de Venta una sola vez y le preguntás desde la aplicación, donde estés. También funciona con ChatGPT.</p>
+      <div class="marcas"><small>Funciona con</small><span><img src="iconos/claude.png" alt=""> Claude</span><span><img src="iconos/chatgpt.png" alt=""> ChatGPT</span></div>
+      <ul class="lst">
+        <li>No hay que instalar nada en cada computadora.</li>
+        <li>Usás tu suscripción de siempre.</li>
+        <li>Cada usuario entra con el suyo y ve lo mismo que ve en el Punto de Venta.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="punto-de-venta" style="padding-top:0">
+  <div class="wrap dos">
+    <div class="rv">
+      <span class="eyebrow">En el Punto de Venta</span>
+      <h2 style="margin-top:16px">Un asistente al lado de tus pantallas.</h2>
+      <p class="lead">Lo abrís desde el menú y le preguntás lo que necesites, sin armar filtros ni buscar la consulta que corresponde.</p>
+      <ul class="lst">
+        <li>Funciona con la cuenta de IA de tu comercio: Claude, ChatGPT o Gemini.</li>
+        <li>Mientras responde, te muestra qué está consultando.</li>
+        <li>Las altas te muestran una vista previa y se graban cuando confirmás.</li>
+      </ul>
+    </div>
+    <div class="chat rv" aria-hidden="true">
+      <div class="chat-top">
+        <span class="av"><svg><use href="#chispa"/></svg></span>
+        <div><b>Asistente de IA</b><small>Punto de Venta · Mi comercio</small></div>
+      </div>
+      <div class="chat-body">
+        <div class="msg yo"><p>Subí 8% los jeans de la lista General desde el lunes</p></div>
+        <div class="msg ia"><span class="av"><svg><use href="#chispa"/></svg></span><div><p>Preparé los precios nuevos de 24 jeans, con el redondeo de la lista. Revisalos antes de grabar:</p></div></div>
+        <div class="conf">
+          <h3>Lista General · desde el lunes</h3>
+          <table class="mini">
+            <tr><th>Producto</th><th>Ahora</th><th>Nuevo</th></tr>
+            <tr><td>Jean J20 azul</td><td>$&nbsp;42.000</td><td>$&nbsp;45.400</td></tr>
+            <tr><td>Jean J22 negro</td><td>$&nbsp;45.500</td><td>$&nbsp;49.100</td></tr>
+            <tr><td>Jean J31 celeste</td><td>$&nbsp;39.900</td><td>$&nbsp;43.100</td></tr>
+          </table>
+          <p style="margin:0 0 12px">Y 21 productos más.</p>
+          <div class="acts"><span class="si">Confirmar</span><span>Cancelar</span></div>
+        </div>
+      </div>
+      <div class="chat-in"><span>Preguntale a tu negocio…</span><i><svg><use href="#enviar"/></svg></i></div>
+    </div>
+  </div>
+</section>
+
+<section id="ejemplos" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Qué le podés preguntar</span>
+      <h2>Las preguntas de<br>todos los días.</h2>
+    </div>
+    <div class="bento">
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M6 2.5h12v19l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></div>
+        <h3>Ventas</h3>
+        <ul class="lst"><li>¿Cuánto vendimos hoy?</li><li>¿Qué sucursal vendió más hoy?</li><li>¿Quién es el mejor vendedor del mes?</li><li>¿Qué producto se vendió más?</li><li>¿Cuál fue el ticket promedio de ayer?</li></ul>
+      </article>
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5v5M18 9.5v5"/></svg></div>
+        <h3>Cobros y caja</h3>
+        <ul class="lst"><li>¿Cuánto entró hoy en efectivo y con tarjeta?</li><li>¿Cuánto hay en la caja 1?</li><li>¿Cuánto cobramos con Mercado Pago este mes?</li></ul>
+      </article>
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg></div>
+        <h3>Clientes y proveedores</h3>
+        <ul class="lst"><li>¿Cuánto me debe Juan Pérez?</li><li>¿Quiénes fueron los 10 mejores clientes del año?</li><li>¿Qué clientes no compran hace más de 6 meses?</li></ul>
+      </article>
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2.5 3 7v10l9 4.5 9-4.5V7z"/><path d="M3 7l9 4.5L21 7M12 11.5v10"/></svg></div>
+        <h3>Productos, precios y stock</h3>
+        <ul class="lst"><li>¿Qué hay de la R100 negra en talle M?</li><li>¿Qué productos están por debajo del mínimo?</li><li>¿Qué tengo en stock que no se vendió en 3 meses?</li></ul>
+      </article>
+      <article class="tile w6 rv">
+        <div class="combina">
+          <div>
+            <h3>Y cruza la información por vos</h3>
+            <p>Para preguntas como "¿qué se vende mucho y tiene poco stock?", consulta las ventas y el stock y te muestra solo lo que importa.</p>
+          </div>
+          <div class="cadena" aria-hidden="true"><span>Más vendidos</span>→<span>Su stock</span>→<span class="on">Lo que hay que reponer</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="altas" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Qué puede hacer por vos</span>
+      <h2>Altas en una frase.</h2>
+      <p class="lead">Siempre te muestra qué va a hacer y graba solo cuando confirmás.</p>
+    </div>
+    <div class="bento">
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 12.5V3h9.5L21 11.5 12.5 20z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div>
+        <h3>Precios</h3>
+        <p>Por porcentaje o por importe, para una carpeta, una temporada o los productos que digas.</p>
+        <div class="dice"><span>Subí 8% los jeans de la lista General desde el lunes</span></div>
+      </article>
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M18 15v6M15 18h6"/></svg></div>
+        <h3>Stock</h3>
+        <p>Ajustes de stock en tu depósito, sumando o restando unidades.</p>
+        <div class="dice"><span>Sumá 10 unidades de la R100 negra M al depósito</span></div>
+      </article>
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M8 3 3 6l2 5 2-1v11h10V10l2 1 2-5-5-3a4 4 0 0 1-8 0z"/></svg></div>
+        <h3>Productos</h3>
+        <p>Productos e indumentaria con sus talles, colores, temporada y precio.</p>
+        <div class="dice"><span>Creá la remera R100 en talles S a XL, negra y blanca, a $&nbsp;15.000</span></div>
+      </article>
+      <article class="tile w3 rv">
+        <div class="ico"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 13 0"/><path d="M19 8v6M16 11h6"/></svg></div>
+        <h3>Clientes</h3>
+        <p>Con el CUIT, completa los datos desde ARCA y te los muestra antes de grabar.</p>
+        <div class="dice"><span>Dá de alta al cliente con CUIT 20-12345678-9</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="datos" id="datos">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">Tus datos</span>
+      <h2 style="margin-top:16px">Seguro por diseño.</h2>
+      <p class="lead">El asistente es opcional: vos decidís si lo usás y con qué proveedor de IA. Tus datos siguen en tu propia base de datos.</p>
+    </div>
+    <div class="rv">
+      <div class="fact"><h3>La IA no entra a tu base de datos</h3><p>Solo usa las consultas del Punto de Venta, las mismas de tus pantallas.</p></div>
+      <div class="fact"><h3>Los mismos permisos de siempre</h3><p>Cada usuario ve lo que ve en sus pantallas: el cajero, su caja; el dueño, todo.</p></div>
+      <div class="fact"><h3>Nada se graba sin tu confirmación</h3><p>Las altas siempre pasan por una vista previa.</p></div>
+      <div class="fact"><h3>Lo que se comparte y lo que no</h3><p>Las preguntas y sus resultados viajan al proveedor de IA que elijas. El CUIT, el DNI, el teléfono, el correo electrónico y el domicilio de tus clientes, nunca.</p></div>
+      <div class="fact"><h3>Cada pregunta queda registrada</h3><p>Quién preguntó, cuándo y qué se consultó.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="necesitas">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Qué necesitás</span>
+      <h2>Tu Punto de Venta y<br>una cuenta de IA.</h2>
+    </div>
+    <div class="steps dos-pasos">
+      <div class="step rv"><b>En el Punto de Venta</b><h3>Una cuenta de IA del comercio</h3><p>De Claude, ChatGPT o Gemini. La cargás una vez y se paga por uso, directo al proveedor.</p></div>
+      <div class="step rv"><b>En Claude o ChatGPT</b><h3>Tu suscripción de siempre</h3><p>Agregás el Punto de Venta como conector, una sola vez, y lo usás en la computadora o en el celular.</p>
+        <div class="marcas"><span><img src="iconos/claude.png" alt=""> Claude</span><span><img src="iconos/chatgpt.png" alt=""> ChatGPT</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap faq">
+    <div class="rv">
+      <span class="eyebrow">Preguntas</span>
+      <h2 style="margin-top:16px">Lo que nos van a preguntar.</h2>
+    </div>
+    <div class="rv">
+      <details open><summary>¿Es obligatorio?</summary><p>No. Es una función opcional del Punto de Venta: la activás si querés y elegís con qué proveedor de IA trabajar.</p></details>
+      <details><summary>¿Se puede equivocar con los números?</summary><p>Los números salen de las mismas consultas que tus pantallas, no los inventa la IA. La IA elige qué consultar y redacta la respuesta. Si algo todavía no lo puede consultar, te lo dice.</p></details>
+      <details><summary>¿Puede borrar o modificar mis datos?</summary><p>No borra ni anula comprobantes. Prepara altas de precios, stock, productos y clientes, y las graba solo cuando confirmás.</p></details>
+      <details><summary>¿Qué ve un empleado?</summary><p>Lo mismo que en sus pantallas del Punto de Venta, con sus permisos. Además, hay un permiso propio para usar el asistente.</p></details>
+      <details><summary>¿Qué datos salen de mi comercio?</summary><p>Las preguntas y los resultados de las consultas viajan al proveedor de IA que elijas, para que pueda responder. El CUIT, el DNI, el teléfono, el correo electrónico y el domicilio de tus clientes no se comparten.</p></details>
+      <details><summary>¿Necesito internet?</summary><p>Sí. La inteligencia artificial funciona en los servidores del proveedor que elijas.</p></details>
+      <details><summary>¿Cuánto cuesta?</summary><p>El uso de la IA lo pagás directo al proveedor: por consumo, con la cuenta de IA del comercio, o con tu suscripción si usás Claude o ChatGPT. Para sumar el asistente a tu Punto de Venta, <a href="index.html#contacto">consultanos</a>.</p></details>
+      <details><summary>¿Cuándo va a estar disponible?</summary><p>Muy pronto. <a href="index.html#contacto">Consultanos</a> y te contamos.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="final" id="contacto">
+  <div class="wrap">
+    <div class="final-box rv">
+      <h2>Preguntale a tu negocio.</h2>
+      <p>Consultanos para sumar el Asistente de IA a tu Punto de Venta.</p>
+      <a class="btn" href="index.html">Conocé el Punto de Venta →</a>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 TecnoSoft. Punto de Venta.</span>
+    <span><a href="https://tecnosoft-pdv.github.io/politica-de-privacidad.html">Política de Privacidad</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}});
+  },{rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>
